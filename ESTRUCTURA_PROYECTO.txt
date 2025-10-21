@@ -1,0 +1,287 @@
+═══════════════════════════════════════════════════════════════
+                ESTRUCTURA DEL PROYECTO
+           BACKEND DOMINÓ MULTIJUGADOR
+═══════════════════════════════════════════════════════════════
+
+domino_backend/
+│
+├── 📄 package.json                    # Configuración del proyecto y dependencias
+├── 📄 .gitignore                      # Archivos ignorados por Git
+├── 📄 .dockerignore                   # Archivos ignorados por Docker
+├── 📄 Dockerfile                      # Configuración de Docker
+├── 📄 docker-compose.yml              # Orquestación de servicios Docker
+│
+├── 📚 DOCUMENTACIÓN/
+│   ├── 📄 README.md                   # Documentación principal
+│   ├── 📄 QUICK_START.md              # Guía rápida de inicio
+│   ├── 📄 INSTALL.md                  # Instrucciones de instalación
+│   ├── 📄 API_DOCUMENTATION.md        # Documentación completa de la API
+│   ├── 📄 DEPLOYMENT.md               # Guía de despliegue en producción
+│   ├── 📄 TESTING.md                  # Guía de pruebas
+│   ├── 📄 PROJECT_SUMMARY.md          # Resumen del proyecto
+│   └── 📄 ESTRUCTURA_PROYECTO.txt     # Este archivo
+│
+├── 📁 scripts/                        # Scripts de utilidad
+│   ├── 📄 seed.js                     # Inicializar datos de prueba
+│   └── 📄 cleanup.js                  # Limpiar salas abandonadas
+│
+└── 📁 src/                            # Código fuente principal
+    │
+    ├── 📄 server.js                   # ⭐ Punto de entrada del servidor
+    │
+    ├── 📁 config/                     # Configuración general
+    │   ├── 📄 database.js             # Conexión a MongoDB
+    │   └── 📄 constants.js            # Constantes del juego
+    │
+    ├── 📁 models/                     # 🗄️ Modelos de base de datos (Mongoose)
+    │   ├── 📄 User.js                 # Modelo de Usuario
+    │   ├── 📄 Room.js                 # Modelo de Sala/Partida
+    │   ├── 📄 Match.js                # Modelo de Historial de Partidas
+    │   └── 📄 Transaction.js          # Modelo de Transacciones de Fichas
+    │
+    ├── 📁 controllers/                # 🎮 Controladores (Lógica de rutas)
+    │   ├── 📄 authController.js       # Autenticación (register, login)
+    │   ├── 📄 userController.js       # Gestión de usuarios
+    │   ├── 📄 roomController.js       # Gestión de salas
+    │   └── 📄 matchController.js      # Historial de partidas
+    │
+    ├── 📁 routes/                     # 🛣️ Rutas de la API REST
+    │   ├── 📄 authRoutes.js           # Rutas de autenticación
+    │   ├── 📄 userRoutes.js           # Rutas de usuarios
+    │   ├── 📄 roomRoutes.js           # Rutas de salas
+    │   └── 📄 matchRoutes.js          # Rutas de partidas
+    │
+    ├── 📁 middleware/                 # 🔒 Middleware de validación
+    │   ├── 📄 auth.js                 # Autenticación JWT
+    │   ├── 📄 validation.js           # Validación de datos
+    │   └── 📄 errorHandler.js         # Manejo de errores
+    │
+    ├── 📁 services/                   # ⚙️ Lógica de negocio
+    │   │
+    │   ├── 📁 gameEngine/             # 🎲 Motor del juego de dominó
+    │   │   └── 📄 DominoEngine.js     # Lógica completa del juego
+    │   │
+    │   ├── 📁 betSystem/              # 💰 Sistema de apuestas
+    │   │   └── 📄 BetManager.js       # Gestión de fichas y apuestas
+    │   │
+    │   └── 📁 roomManager/            # 🏠 Gestión de salas
+    │       └── 📄 RoomManager.js      # Crear, unirse, salir de salas
+    │
+    ├── 📁 socket/                     # 🔌 Comunicación en tiempo real
+    │   │
+    │   ├── 📄 socketHandler.js        # ⭐ Manejador principal de Socket.io
+    │   │
+    │   └── 📁 events/                 # Eventos de Socket.io
+    │       ├── 📄 roomEvents.js       # Eventos de salas
+    │       └── 📄 gameEvents.js       # Eventos de juego
+    │
+    └── 📁 utils/                      # 🛠️ Utilidades
+        ├── 📄 helpers.js              # Funciones auxiliares
+        └── 📄 constants.js            # Mensajes y constantes
+
+
+═══════════════════════════════════════════════════════════════
+                      MÓDULOS PRINCIPALES
+═══════════════════════════════════════════════════════════════
+
+1. 🧑‍💼 AUTENTICACIÓN Y USUARIOS
+   ├── Registro con validación
+   ├── Login con JWT
+   ├── Gestión de perfiles
+   ├── Sistema de fichas virtuales
+   ├── Bonus diario (100 fichas/24h)
+   └── Estadísticas y ranking
+
+2. 🏠 GESTIÓN DE SALAS
+   ├── Crear salas (públicas/privadas)
+   ├── Códigos únicos de sala
+   ├── Unirse/salir de salas
+   ├── Sistema de "ready"
+   ├── Control de 2-4 jugadores
+   └── Auto-limpieza de salas
+
+3. 🎲 MOTOR DE JUEGO
+   ├── Generación de 28 fichas
+   ├── Reparto aleatorio (7 fichas/jugador)
+   ├── Validación de jugadas
+   ├── Sistema de turnos
+   ├── Detección de ganador
+   ├── Detección de tranca
+   └── Cálculo de puntos
+
+4. 💰 SISTEMA DE APUESTAS
+   ├── Validación de apuestas
+   ├── Descuento al inicio
+   ├── Distribución de ganancias
+   ├── Sistema de bote (pot)
+   ├── Registro de transacciones
+   └── Actualización de estadísticas
+
+5. 🔌 SOCKET.IO
+   ├── Autenticación con JWT
+   ├── Eventos de sala
+   ├── Eventos de juego
+   ├── Notificaciones en tiempo real
+   ├── Manejo de desconexiones
+   └── Broadcast a jugadores
+
+6. 🗄️ BASE DE DATOS
+   ├── Modelo User (usuarios)
+   ├── Modelo Room (salas activas)
+   ├── Modelo Match (historial)
+   └── Modelo Transaction (fichas)
+
+
+═══════════════════════════════════════════════════════════════
+                    ENDPOINTS DE LA API
+═══════════════════════════════════════════════════════════════
+
+AUTENTICACIÓN (4 endpoints)
+├── POST   /api/auth/register          # Registrar usuario
+├── POST   /api/auth/login             # Iniciar sesión
+├── POST   /api/auth/logout            # Cerrar sesión
+└── GET    /api/auth/profile           # Obtener perfil
+
+USUARIOS (5 endpoints)
+├── GET    /api/users/:id              # Obtener usuario
+├── PATCH  /api/users/profile/update   # Actualizar perfil
+├── POST   /api/users/daily-bonus      # Reclamar bonus
+├── GET    /api/users/betting/stats    # Estadísticas de apuestas
+└── GET    /api/users/leaderboard/top  # Ranking de jugadores
+
+SALAS (5 endpoints)
+├── GET    /api/rooms                  # Listar salas
+├── POST   /api/rooms/create           # Crear sala
+├── GET    /api/rooms/:code            # Obtener sala por código
+├── POST   /api/rooms/:id/join         # Unirse a sala
+└── POST   /api/rooms/:id/leave        # Salir de sala
+
+PARTIDAS (3 endpoints)
+├── GET    /api/matches/history/:userId    # Historial de usuario
+├── GET    /api/matches/:id                # Detalle de partida
+└── GET    /api/matches/stats/general      # Estadísticas generales
+
+
+═══════════════════════════════════════════════════════════════
+                  EVENTOS SOCKET.IO
+═══════════════════════════════════════════════════════════════
+
+CLIENTE → SERVIDOR
+├── join_room           # Unirse a sala
+├── leave_room          # Salir de sala
+├── ready               # Marcar como listo
+├── start_game          # Iniciar partida (host)
+├── play_tile           # Jugar una ficha
+└── pass_turn           # Pasar turno
+
+SERVIDOR → CLIENTE
+├── connected           # Conexión exitosa
+├── room_joined         # Sala unida exitosamente
+├── player_joined       # Nuevo jugador en sala
+├── player_left         # Jugador salió
+├── player_ready        # Jugador listo/no listo
+├── all_ready           # Todos listos
+├── game_started        # Partida iniciada
+├── tiles_dealt         # Fichas repartidas
+├── tile_played         # Ficha jugada
+├── turn_passed         # Turno pasado
+├── game_ended          # Partida terminada
+└── error               # Error en operación
+
+
+═══════════════════════════════════════════════════════════════
+                 TECNOLOGÍAS UTILIZADAS
+═══════════════════════════════════════════════════════════════
+
+BACKEND
+├── Node.js 18+                 # Runtime
+├── Express.js 4.18+            # Framework web
+├── Socket.io 4.6+              # WebSockets
+├── MongoDB 5+                  # Base de datos
+├── Mongoose 8+                 # ODM para MongoDB
+├── JWT (jsonwebtoken)          # Autenticación
+├── Bcrypt.js                   # Hash de contraseñas
+├── Express-validator           # Validación de datos
+├── Helmet                      # Seguridad HTTP
+├── CORS                        # Cross-Origin
+├── Morgan                      # Logger HTTP
+└── Dotenv                      # Variables de entorno
+
+DEVOPS
+├── Docker                      # Containerización
+├── Docker Compose              # Orquestación
+└── Nodemon                     # Auto-reload en dev
+
+
+═══════════════════════════════════════════════════════════════
+                   CARACTERÍSTICAS CLAVE
+═══════════════════════════════════════════════════════════════
+
+✅ API REST completa
+✅ WebSocket con Socket.io para tiempo real
+✅ Autenticación con JWT
+✅ Validación de datos en servidor
+✅ Motor de dominó completamente funcional
+✅ Sistema de apuestas con fichas virtuales
+✅ Sistema de bonus diario
+✅ Historial de partidas
+✅ Ranking de jugadores
+✅ Manejo de desconexiones
+✅ Base de datos MongoDB
+✅ Docker ready
+✅ Documentación completa
+✅ Scripts de utilidad
+
+
+═══════════════════════════════════════════════════════════════
+                      ESTADÍSTICAS
+═══════════════════════════════════════════════════════════════
+
+📊 Total de Archivos:        37+
+📊 Líneas de Código:         ~3,500+
+📊 Endpoints REST:           17
+📊 Eventos Socket.io:        17
+📊 Modelos de BD:            4
+📊 Controladores:            4
+📊 Servicios:                3
+📊 Middleware:               3
+📊 Documentos:               8
+
+
+═══════════════════════════════════════════════════════════════
+                      COMANDOS ÚTILES
+═══════════════════════════════════════════════════════════════
+
+# Instalación
+npm install
+
+# Desarrollo (auto-reload)
+npm run dev
+
+# Producción
+npm start
+
+# Crear datos de prueba
+npm run seed
+
+# Limpiar salas abandonadas
+npm run cleanup
+
+# Docker
+docker-compose up -d
+docker-compose logs -f backend
+docker-compose down
+
+
+═══════════════════════════════════════════════════════════════
+                    ESTADO DEL PROYECTO
+═══════════════════════════════════════════════════════════════
+
+✅ COMPLETO Y FUNCIONAL
+✅ LISTO PARA DESARROLLO
+✅ LISTO PARA PRODUCCIÓN
+✅ DOCUMENTACIÓN COMPLETA
+✅ CÓDIGO LIMPIO Y ORGANIZADO
+
+═══════════════════════════════════════════════════════════════
+

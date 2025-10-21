@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # Backend Node.js
+  backend:
+    build: .
+    container_name: domino_backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - MONGODB_URI=mongodb://mongo:27017/domino_game
+      - JWT_SECRET=${JWT_SECRET}
+      - INITIAL_COINS=1000
+      - DAILY_BONUS=100
+      - MIN_BET=10
+      - MAX_BET=10000
+      - SOCKET_CORS_ORIGIN=*
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - domino_network
+
+  # MongoDB
+  mongo:
+    image: mongo:6
+    container_name: domino_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+    networks:
+      - domino_network
+
+  # Mongo Express (opcional - admin de MongoDB)
+  mongo-express:
+    image: mongo-express:latest
+    container_name: domino_mongo_express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongo
+      - ME_CONFIG_MONGODB_PORT=27017
+      - ME_CONFIG_BASICAUTH_USERNAME=admin
+      - ME_CONFIG_BASICAUTH_PASSWORD=admin123
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - domino_network
+
+volumes:
+  mongo_data:
+
+networks:
+  domino_network:
+    driver: bridge
+
